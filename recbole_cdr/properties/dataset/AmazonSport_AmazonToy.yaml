@@ -1,0 +1,71 @@
+seed: 2022
+field_separator: ","
+#save_dataloaders: True
+#save_dataset: True
+embedding_size: 64
+learning_rate: 0.001
+
+# Training settings
+# 针对冷启动模拟场景下，对比方法BiTGCF的设置
+#eval_step: 0 #less than 1, 将不会在valid数据集上评估模型
+epochs: 400
+train_batch_size: 2048
+eval_batch_size: 20480
+
+#train_neg_sample_args: None
+
+source_domain:
+  dataset: AmazonSport_AmazonToy
+  data_path: './dataset/'
+  multimodal_feat_path: './dataset/AmazonSport_AmazonToy'
+  text_feat_file: 'sport_text_feat.npy'
+  visual_feat_file: 'sport_visual_feat.npy'
+  review_feat_file: 'sport_review_feat.npy'
+  user_map_file: 'user_id_map.csv'
+  item_map_file: 'item_id_map.csv'
+  item_feat_id_field: item_id
+  item_feat_index_field: itemID
+  USER_ID_FIELD: user_id
+  ITEM_ID_FIELD: item_id
+  RATING_FIELD: rating
+  TIME_FIELD: timestamp
+  NEG_PREFIX: neg_
+  LABEL_FIELD: label
+  threshold:
+    rating: 4                    # (dict) 0/1 labels will be generated according to the pairs.
+  load_col:
+    inter: [user_id, item_id, rating]
+  user_inter_num_interval: "[0,inf)"
+  item_inter_num_interval: "[0,inf)"
+  val_interval:
+    rating: "[0,inf)"
+  drop_filter_field: True
+
+target_domain:
+  dataset: AmazonToy_AmazonSport
+  data_path: './dataset/'
+  multimodal_feat_path: './dataset/AmazonToy_AmazonSport'
+  text_feat_file: 'toy_text_feat.npy'
+  visual_feat_file: 'toy_visual_feat.npy'
+  review_feat_file: 'toy_review_feat.npy'
+  user_map_file: 'user_id_map.csv'
+  item_map_file: 'item_id_map.csv'
+  item_feat_id_field: item_id
+  item_feat_index_field: itemID
+  USER_ID_FIELD: user_id
+  ITEM_ID_FIELD: item_id
+  RATING_FIELD: rating
+  TIME_FIELD: timestamp
+  NEG_PREFIX: neg_
+  LABEL_FIELD: label
+  threshold:
+    rating: 4                    # (dict) 0/1 labels will be generated according to the pairs.
+  load_col:
+    inter: [user_id, item_id, rating]
+  user_inter_num_interval: "[0,inf)"
+  item_inter_num_interval: "[0,inf)"
+  val_interval:
+    rating: "[0,inf)"
+  drop_filter_field: True
+
+

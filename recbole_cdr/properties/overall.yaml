@@ -1,0 +1,70 @@
+# general
+lr_scheduler: none
+scheduler_metric: NDCG@10
+scheduler_mode: max
+scheduler_factor: 0.5
+scheduler_patience: 5
+scheduler_min_lr: 1.0e-6
+use_gpu: True
+seed: 2022
+state: INFO
+reproducibility: True
+data_path: 'dataset/'
+checkpoint_dir: 'saved'
+show_progress: True
+save_dataset: False
+dataset_save_path: ~
+save_dataloaders: False
+dataloaders_save_path: ~
+log_wandb: False
+wandb_project: 'recbole_cdr'
+shuffle: True                   # (bool) Whether to shuffle the training data before each epoch.
+
+
+# training settings
+train_epochs: ["BOTH:400"]  #Return both data in source domain and target domain
+train_batch_size: 2048
+learner: adam
+learning_rate: 0.0001
+neg_sampling:
+  uniform: 1
+eval_step: 1
+stopping_step: 10
+clip_grad_norm: ~
+# clip_grad_norm:  {'max_norm': 5, 'norm_type': 2}
+weight_decay: 0.0
+loss_decimal_place: 4           # (int) The decimal place of training loss.
+require_pow: False              # (bool) Whether to perform power operation in EmbLoss.
+
+# Evaluation Settings
+eval_args:
+#  split: { 'LS': 'valid_and_test' }  #leave-one-out data splitting
+  split: {'RS':[0.6,0.2,0.2]}
+  group_by: user
+  order: RO
+  mode: full
+repeatable: True
+metrics: ["MRR","Recall","NDCG","Hit"]
+topk: [20]
+full_sort_chunk_size: 2048
+fast_full_sort_eval: True
+eval_batch_size: 5000000
+valid_metric: Recall@20
+metric_decimal_place: 4        
+
+# Test-only extra metrics and CSV export.
+# These are calculated only after the final test evaluation, not during validation.
+test_extra_metrics: True
+test_extra_metrics_batch_size: 256
+test_extra_metrics_sample_size: ~
+test_extra_metrics_seed: 2022
+metrics_csv_path: results/test_metrics.csv
+metrics_csv_append: True
+
+# Target-domain full-sort ranking evaluation.
+eval_neg_sample_args:
+  strategy: full
+  distribution: uniform
+eval_batch_size: 5000000
+full_sort_chunk_size: 8192
+fast_full_sort_eval: true

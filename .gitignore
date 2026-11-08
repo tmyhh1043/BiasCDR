@@ -1,0 +1,52 @@
+.idea/
+.DS_Store
+**/.DS_Store
+.DS_Store?
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+.venv/
+.venv-*/
+venv/
+env/
+
+# Experiment data and generated artifacts
+dataset/
+datasets/
+!recbole_cdr/properties/dataset/
+!recbole_cdr/properties/dataset/*.yaml
+results/
+saved/
+log/
+logs/
+log_tensorboard/
+runs/
+wandb/
+
+# Model checkpoints and generated feature/data files
+*.pth
+*.pt
+*.ckpt
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.b
+
+# Large tabular/raw data dumps
+*.csv
+*.inter
+*.jsonl
+*.jsonl.gz
+
+# Office/editor lock files
+.~lock.*#
+
+# Local runtime files
+FETCH_HEAD

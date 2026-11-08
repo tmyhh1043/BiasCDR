@@ -1,0 +1,13 @@
+use_shared_specific: true
+use_multimodal_alignment: true
+use_shared_transfer: true
+use_bias_decomposition: true
+use_weighted_bpr: true
+use_gated_transfer: true
+use_residual_fusion: true
+lambda_shared_align: 0.01
+lambda_orth: 0.01
+lambda_pop: 0.1
+lambda_bias_independence: 0
+lr_scheduler: none
+experiment_tag: 10_weighted_bpr

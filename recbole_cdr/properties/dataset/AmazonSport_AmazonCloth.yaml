@@ -1,0 +1,63 @@
+seed: 2022
+field_separator: ","
+embedding_size: 64
+learning_rate: 0.0001
+
+# Training settings aligned with the existing Amazon cross-domain runs.
+epochs: 400
+train_batch_size: 2048
+eval_batch_size: 20480
+
+source_domain:
+  dataset: AmazonSport_AmazonCloth
+  data_path: './dataset/'
+  multimodal_feat_path: './dataset/AmazonSport_AmazonCloth'
+  text_feat_file: 'sport_text_feat.npy'
+  visual_feat_file: 'sport_visual_feat.npy'
+  review_feat_file: 'sport_review_feat.npy'
+  user_map_file: 'user_id_map.csv'
+  item_map_file: 'item_id_map.csv'
+  item_feat_id_field: item_id
+  item_feat_index_field: itemID
+  USER_ID_FIELD: user_id
+  ITEM_ID_FIELD: item_id
+  RATING_FIELD: rating
+  TIME_FIELD: timestamp
+  NEG_PREFIX: neg_
+  LABEL_FIELD: label
+  threshold:
+    rating: 4
+  load_col:
+    inter: [user_id, item_id, rating]
+  user_inter_num_interval: "[0,inf)"
+  item_inter_num_interval: "[0,inf)"
+  val_interval:
+    rating: "[0,inf)"
+  drop_filter_field: True
+
+target_domain:
+  dataset: AmazonCloth_AmazonSport
+  data_path: './dataset/'
+  multimodal_feat_path: './dataset/AmazonCloth_AmazonSport'
+  text_feat_file: 'cloth_text_feat.npy'
+  visual_feat_file: 'cloth_visual_feat.npy'
+  review_feat_file: 'cloth_review_feat.npy'
+  user_map_file: 'user_id_map.csv'
+  item_map_file: 'item_id_map.csv'
+  item_feat_id_field: item_id
+  item_feat_index_field: itemID
+  USER_ID_FIELD: user_id
+  ITEM_ID_FIELD: item_id
+  RATING_FIELD: rating
+  TIME_FIELD: timestamp
+  NEG_PREFIX: neg_
+  LABEL_FIELD: label
+  threshold:
+    rating: 4
+  load_col:
+    inter: [user_id, item_id, rating]
+  user_inter_num_interval: "[0,inf)"
+  item_inter_num_interval: "[0,inf)"
+  val_interval:
+    rating: "[0,inf)"
+  drop_filter_field: True

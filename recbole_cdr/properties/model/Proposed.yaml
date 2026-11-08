@@ -1,0 +1,60 @@
+# Phase 1 DGCDRBASE architecture. These values must match its checkpoint.
+gcn_pretrain_epochs: 100
+embedding_size: 64
+n_layers: 3
+drop_rate: 0.1
+connect_way: mean
+
+# Required Phase 1 checkpoint. Set this on the command line for each direction.
+pretrained_model_file: null
+
+# Phase 2: Phase 1 のスコアに小さな嗜好補正を加える。
+lambda_preference_rank: 1.0
+lambda_bias: 0.1
+lambda_distill: 0.1
+bias_warmup_epochs: 3
+distill_epochs: 5
+distill_schedule: constant
+distill_temperature: 1.0
+bias_sample_size: 4096
+preference_negative_mode: mixed
+matched_negative_weight: 0.5
+observation_modulation_strength: 0.25
+
+# alpha=0 は Phase 1 + Adapter 補正。厳密な Phase 1 は baseline モード。
+inference_score_mode: popularity_subtract
+inference_popularity_alpha: 0.0
+counterfactual_reference: 0.5
+
+# Columns written by the fixed-seed parameter-analysis scripts.
+metrics_csv_param_keys:
+- experiment_tag
+- seed
+- lambda_preference_rank
+- lambda_bias
+- lambda_distill
+- preference_negative_mode
+- matched_negative_weight
+- observation_modulation_strength
+- inference_score_mode
+- inference_popularity_alpha
+- learning_rate
+
+# Phase 2 は Adapter と人気度ヘッドだけを学習する。
+learning_rate: 0.0001
+train_epochs: ["BOTH:200"]
+valid_start_epoch: 4
+train_batch_size: 2048
+train_neg_sample_args:
+  strategy: by
+  by: 1
+  distribution: uniform
+  dynamic: none
+
+# Target-domain full-sort ranking evaluation.
+eval_neg_sample_args:
+  strategy: full
+  distribution: uniform
+eval_batch_size: 5000000
+full_sort_chunk_size: 8192
+fast_full_sort_eval: true

@@ -1,0 +1,51 @@
+gpu_id: 0
+
+# P2M2-CDR reproduction defaults from the paper/released implementation.
+embedding_size: 128
+domain_disen_dim: 256
+n_layers: 3
+drop_rate: 0.2
+
+# Paper Eq. (7)--(12). A fixed aligned-user sample keeps the summed CL loss
+# scale independent of the RecBole source/target interaction batch lengths.
+ssl_temp: 0.1
+alpha: 0.005
+ssl_user_batch_size: 512
+ssl_reduction: sum
+reg_weight: 0.0
+
+# Privacy-preserving decoder.
+ldp_noise: 0.01
+obf: True
+apply_noise_in_eval: True
+agg_way: concat
+
+# The released model uses review text and item text. Visual features are not
+# part of its active forward path and remain an explicit optional ablation.
+use_review_features: True
+use_text_features: True
+use_visual_features: False
+strict_multimodal_loading: True
+review_embed_dim: 384
+text_embed_dim: 384
+visual_embed_dim: 4096
+
+# Use the same training batch size as the other comparison methods.
+train_epochs: ["BOTH:200"]
+train_batch_size: 2048
+learning_rate: 0.001
+eval_step: 1
+valid_start_epoch: 1
+stopping_step: 5
+
+# MLP scoring cannot be reduced to one matrix multiplication. Chunking bounds
+# its full-sort intermediate memory without changing scores.
+checkpoint_dir: saved/p2m2cdr
+
+# Target-domain full-sort ranking evaluation.
+eval_neg_sample_args:
+  strategy: full
+  distribution: uniform
+eval_batch_size: 5000000
+full_sort_chunk_size: 8192
+fast_full_sort_eval: true
