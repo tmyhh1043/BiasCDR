@@ -1,2 +1,0 @@
-recbole==1.0.1
-scikit-learn>=1.0,<2

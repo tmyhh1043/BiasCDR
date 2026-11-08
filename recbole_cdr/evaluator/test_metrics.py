@@ -107,7 +107,7 @@ def _iter_topk(model, test_data, max_k, batch_size, uid_list):
 
 
 def calculate_validation_coverage_arp(config, model, train_dataset, valid_data):
-    """Compute exact validation Coverage/ARP from full-sort top-k lists."""
+    """Compute full-ranking validation popularity and warm/cold diagnostics."""
     topk = list(_config_get(config, "topk", [20]))
     num_items = getattr(model, "target_num_items", valid_data.dataset.num(valid_data.iid_field))
     item_pop = _target_item_popularity(model, train_dataset, num_items)
@@ -117,18 +117,49 @@ def calculate_validation_coverage_arp(config, model, train_dataset, valid_data):
         raise ValueError("valid_extra_metrics_batch_size must be positive")
     coverage = {k: set() for k in topk}
     pop_sum = {k: 0.0 for k in topk}
+    ratio = float(_config_get(config, "long_tail_item_ratio", 0.8))
+    if not 0 < ratio <= 1:
+        raise ValueError("long_tail_item_ratio must be in (0, 1]")
+    catalog = np.arange(1, num_items, dtype=np.int64)
+    warm = catalog[item_pop[catalog] > 0]
+    warm_tail = np.zeros(num_items, dtype=bool)
+    if warm.size:
+        boundary = np.sort(item_pop[warm])[int(np.ceil(warm.size * ratio)) - 1]
+        warm_tail[warm] = item_pop[warm] <= boundary
+    cold = np.zeros(num_items, dtype=bool)
+    cold[catalog] = item_pop[catalog] == 0
+    groups = {"WarmTail": warm_tail, "ColdItem": cold}
+    group_coverage = {name: {k: set() for k in topk} for name in groups}
+    group_hits = {name: {k: 0 for k in topk} for name in groups}
+    group_positives = {name: {k: 0 for k in topk} for name in groups}
     user_count = 0
     was_training = model.training
     model.eval()
     try:
         with torch.no_grad():
-            for _, rec_items in _iter_topk(model, valid_data, max(topk), batch_size, users):
+            for batch_users, rec_items in _iter_topk(model, valid_data, max(topk), batch_size, users):
                 rec = rec_items.numpy()
                 user_count += len(rec)
                 for k in topk:
                     selected = rec[:, :k]
                     coverage[k].update(selected[selected > 0].tolist())
                     pop_sum[k] += float(item_pop[selected].sum())
+                    for name, mask in groups.items():
+                        valid_items = selected[selected > 0]
+                        group_coverage[name][k].update(
+                            valid_items[mask[valid_items]].tolist()
+                        )
+                    for row, uid in enumerate(batch_users.tolist()):
+                        positive = valid_data.uid2positive_item[uid]
+                        if positive is None or len(positive) == 0:
+                            continue
+                        positive_np = positive.detach().cpu().numpy()
+                        for name, mask in groups.items():
+                            relevant = positive_np[mask[positive_np]]
+                            group_positives[name][k] += len(relevant)
+                            group_hits[name][k] += int(np.isin(
+                                selected[row], relevant
+                            ).sum())
     finally:
         if was_training:
             model.train()
@@ -140,6 +171,18 @@ def calculate_validation_coverage_arp(config, model, train_dataset, valid_data):
         result[_metric_key("ARP", k)] = round(
             pop_sum[k] / (user_count * k) if user_count else 0.0, 7
         )
+        for name, mask in groups.items():
+            catalog_count = int(mask.sum())
+            positive_count = group_positives[name][k]
+            result[_metric_key(f"{name}Coverage", k)] = round(
+                len(group_coverage[name][k]) / catalog_count
+                if catalog_count else 0.0, 7
+            )
+            result[_metric_key(f"{name}Recall", k)] = round(
+                group_hits[name][k] / positive_count
+                if positive_count else 0.0, 7
+            )
+            result[_metric_key(f"{name}PositiveCount", k)] = positive_count
     return result
 
 
@@ -198,9 +241,10 @@ def calculate_test_extra_metrics(config, model, train_dataset, test_data):
     uid_list = _test_uid_list(test_data, sample_size=sample_size, seed=sample_seed)
 
     item_pop = _target_item_popularity(model, train_dataset, num_items)
-    long_tail_enabled = bool(
-        _config_get(config, "test_long_tail_coverage", False)
-    )
+    long_tail_enabled = bool(_config_get(
+        config, "test_long_tail_metrics",
+        _config_get(config, "test_long_tail_coverage", False),
+    ))
     long_tail_ratio = float(
         _config_get(config, "long_tail_item_ratio", 0.8)
     )
@@ -213,6 +257,18 @@ def calculate_test_extra_metrics(config, model, train_dataset, test_data):
     ]
     long_tail_mask = np.zeros(num_items, dtype=bool)
     long_tail_mask[long_tail_items] = True
+    # Cold is defined strictly by zero target-domain training interactions.
+    # Warm-tail is the bottom fraction of training-observed items by count;
+    # all items tied at the boundary belong to the same group.
+    cold_mask = np.zeros(num_items, dtype=bool)
+    cold_mask[catalog_items] = item_pop[catalog_items] == 0
+    warm_items = catalog_items[item_pop[catalog_items] > 0]
+    warm_tail_mask = np.zeros(num_items, dtype=bool)
+    if warm_items.size:
+        boundary = np.sort(item_pop[warm_items])[
+            int(np.ceil(warm_items.size * long_tail_ratio)) - 1
+        ]
+        warm_tail_mask[warm_items] = item_pop[warm_items] <= boundary
     item_features = _target_item_features(model, num_items)
     if item_features is not None:
         item_features = torch.nn.functional.normalize(item_features, p=2, dim=1).cpu()
@@ -289,6 +345,20 @@ def calculate_test_extra_metrics(config, model, train_dataset, test_data):
     ild_sums = {k: 0.0 for k in topk}
     coverage_sets = {k: set() for k in topk}
     long_tail_coverage_sets = {k: set() for k in topk}
+    long_tail_exposure_counts = {k: 0 for k in topk}
+    long_tail_hit_counts = {k: 0 for k in topk}
+    long_tail_positive_counts = {k: 0 for k in topk}
+    warm_mask = np.zeros(num_items, dtype=bool)
+    warm_mask[warm_items] = True
+    group_masks = {
+        "WarmItem": warm_mask,
+        "WarmTail": warm_tail_mask,
+        "ColdItem": cold_mask,
+    }
+    group_coverage = {name: {k: set() for k in topk} for name in group_masks}
+    group_hits = {name: {k: 0 for k in topk} for name in group_masks}
+    group_positives = {name: {k: 0 for k in topk} for name in group_masks}
+    group_positive_users = {name: {k: 0 for k in topk} for name in group_masks}
     exposure_counts = {k: np.zeros(num_items, dtype=np.float64) for k in topk}
     item_group_hits = {k: np.zeros(3, dtype=np.float64) for k in topk}
     item_group_relevant = {k: np.zeros(3, dtype=np.float64) for k in topk}
@@ -324,6 +394,37 @@ def calculate_test_extra_metrics(config, model, train_dataset, test_data):
                     long_tail_coverage_sets[k].update(
                         long_tail_recommended.tolist()
                     )
+                    long_tail_exposure_counts[k] += int(
+                        long_tail_mask[items_k].sum()
+                    )
+                    for row, uid in enumerate(batch_users.tolist()):
+                        positive = test_data.uid2positive_item[uid]
+                        if positive is None or len(positive) == 0:
+                            continue
+                        positive_np = positive.detach().cpu().numpy()
+                        positive_tail = positive_np[
+                            long_tail_mask[positive_np]
+                        ]
+                        long_tail_positive_counts[k] += len(positive_tail)
+                        long_tail_hit_counts[k] += int(np.isin(
+                            items_k[row], positive_tail
+                        ).sum())
+                    for name, mask in group_masks.items():
+                        group_coverage[name][k].update(
+                            valid_items[mask[valid_items]].tolist()
+                        )
+                    for row, uid in enumerate(batch_users.tolist()):
+                        positive = test_data.uid2positive_item[uid]
+                        if positive is None or len(positive) == 0:
+                            continue
+                        positive_np = positive.detach().cpu().numpy()
+                        for name, mask in group_masks.items():
+                            relevant = positive_np[mask[positive_np]]
+                            group_positives[name][k] += len(relevant)
+                            group_positive_users[name][k] += int(len(relevant) > 0)
+                            group_hits[name][k] += int(np.isin(
+                                items_k[row], relevant
+                            ).sum())
                 exposure_counts[k] += np.bincount(items_k.reshape(-1), minlength=num_items)
 
                 if item_features is not None and k > 1:
@@ -394,6 +495,15 @@ def calculate_test_extra_metrics(config, model, train_dataset, test_data):
             result[_metric_key("Coverage", k)] = 0.0
             if long_tail_enabled:
                 result[_metric_key("LongTailCoverage", k)] = 0.0
+                result[_metric_key("LongTailExposure", k)] = 0.0
+                result[_metric_key("LongTailRecall", k)] = 0.0
+                result[_metric_key("LongTailPositiveCount", k)] = 0
+                for name, mask in group_masks.items():
+                    result[_metric_key(f"{name}Coverage", k)] = 0.0
+                    result[_metric_key(f"{name}Recall", k)] = 0.0
+                    result[_metric_key(f"{name}PositiveCount", k)] = 0
+                    result[_metric_key(f"{name}PositiveUserCount", k)] = 0
+                    result[_metric_key(f"{name}CatalogCount", k)] = int(mask.sum())
             result[_metric_key("ILD", k)] = 0.0
             result[_metric_key("Gini", k)] = 0.0
         return result
@@ -408,6 +518,33 @@ def calculate_test_extra_metrics(config, model, train_dataset, test_data):
                 len(long_tail_coverage_sets[k]) / max(long_tail_size, 1),
                 7,
             )
+            result[_metric_key("LongTailExposure", k)] = round(
+                long_tail_exposure_counts[k] / (user_count * k), 7
+            )
+            result[_metric_key("LongTailRecall", k)] = round(
+                long_tail_hit_counts[k] / long_tail_positive_counts[k]
+                if long_tail_positive_counts[k] else 0.0,
+                7,
+            )
+            result[_metric_key("LongTailPositiveCount", k)] = (
+                long_tail_positive_counts[k]
+            )
+            for name, mask in group_masks.items():
+                catalog_count = int(mask.sum())
+                positive_count = group_positives[name][k]
+                result[_metric_key(f"{name}Coverage", k)] = round(
+                    len(group_coverage[name][k]) / catalog_count
+                    if catalog_count else 0.0, 7
+                )
+                result[_metric_key(f"{name}Recall", k)] = round(
+                    group_hits[name][k] / positive_count
+                    if positive_count else 0.0, 7
+                )
+                result[_metric_key(f"{name}PositiveCount", k)] = positive_count
+                result[_metric_key(f"{name}PositiveUserCount", k)] = (
+                    group_positive_users[name][k]
+                )
+                result[_metric_key(f"{name}CatalogCount", k)] = catalog_count
         result[_metric_key("ILD", k)] = round(ild_sums[k] / user_count if item_features is not None and k > 1 else 0.0, 7)
         exposure = exposure_counts[k][1:num_items] if num_items > 1 else exposure_counts[k]
         result[_metric_key("Gini", k)] = round(_gini(exposure), 7)

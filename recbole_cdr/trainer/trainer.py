@@ -293,18 +293,52 @@ class PROPOSEDSISTrainer(CrossDomainTrainer):
     def __init__(self, config, model):
         super().__init__(config, model)
         checkpoint_root, extension = os.path.splitext(self.saved_model_file)
-        self.saved_model_file = f'{checkpoint_root}-PROPOSEDSIS{extension}'
+        if model.mm_tail_weight:
+            variant = '-M4'
+        elif model.mm_kd_weight:
+            variant = '-M3'
+        elif model.mm_popularity_gate:
+            variant = '-M2'
+        elif model.mm_fusion_weight:
+            variant = '-M1'
+        else:
+            variant = ''
+        self.saved_model_file = f'{checkpoint_root}-PROPOSEDSIS{variant}{extension}'
         if not model._frozen_cache_ready:
             raise RuntimeError('Frozen GCN representation cache is not ready.')
+        if model.mm_fusion_weight:
+            self.logger.info(
+                '%s trainable parameters: %s', variant.lstrip('-'),
+                [name for name, _ in model.phase2_named_parameters()],
+            )
 
     def _build_optimizer(self, **kwargs):
         return super()._build_optimizer(
             params=list(self.model.phase2_parameters()), **kwargs
         )
 
+    def _generate_train_loss_output(self, epoch_idx, s_time, e_time, losses):
+        output = super()._generate_train_loss_output(
+            epoch_idx, s_time, e_time, losses
+        )
+        if not self.model.mm_fusion_weight or not isinstance(losses, tuple):
+            return output
+        names = (
+            'tail_weighted_fusion_bpr' if self.model.mm_tail_weight else 'fusion_bpr',
+            'source_observation', 'source_preference', 'cross_alignment',
+            'adversarial', 'beta_regularization',
+        )
+        if self.model.mm_kd_weight:
+            names += ('ranking_distillation',)
+        decimals = int(self.config['loss_decimal_place'])
+        return output + ' | ' + ', '.join(
+            f'{name}: {float(value):.{decimals}f}'
+            for name, value in zip(names, losses)
+        )
+
 
 class PROPOSEDTrainer(CrossDomainTrainer):
-    """Train the new adapters and heads over frozen DGCDRBASE outputs."""
+    """Train the end-to-end Proposed model with the standard optimizer."""
 
     def __init__(self, config, model):
         super().__init__(config, model)
@@ -315,51 +349,8 @@ class PROPOSEDTrainer(CrossDomainTrainer):
             f'{checkpoint_root}-PROPOSED-ADDITIVE{checkpoint_extension}'
         )
 
-        if not model.backbone_is_frozen():
-            raise RuntimeError('DGCDRBASE backbone is not frozen.')
-        if not model._cache_ready:
-            raise RuntimeError('Frozen GCN representation cache is not ready.')
+        self.logger.info('Proposed checkpoint: %s', self.saved_model_file)
 
-        expected_ids = {
-            id(parameter) for parameter in model.phase2_parameters()
-        }
-        optimizer_ids = {
-            id(parameter)
-            for group in self.optimizer.param_groups
-            for parameter in group['params']
-        }
-        if optimizer_ids != expected_ids:
-            raise RuntimeError(
-                'Phase 2 optimizer parameters do not match the declared '
-                'adapter/head parameters.'
-            )
-        self.logger.info('backbone_is_frozen=true')
-        self.logger.info(
-            'trainable_parameter_names=%s',
-            [name for name, parameter in model.named_parameters()
-             if parameter.requires_grad],
-        )
-        self.logger.info(
-            'phase2_checkpoint=%s', self.saved_model_file
-        )
-
-    def _build_optimizer(self, **kwargs):
-        return super()._build_optimizer(
-            params=list(self.model.phase2_parameters()),
-            **kwargs,
-        )
-
-    def _train_epoch(self, train_data, epoch_idx, *args, **kwargs):
-        self.model.set_epoch(epoch_idx)
-        result = super()._train_epoch(train_data, epoch_idx, *args, **kwargs)
-        stats = self.model.sampling_stats()
-        total = stats['matched'] + stats['fallback']
-        if total:
-            self.logger.info(
-                'preference_matched_negative_rate=%.4f (%d/%d)',
-                stats['matched'] / total, stats['matched'], total,
-            )
-        return result
 
 class PROPOSED_V2Trainer(CrossDomainTrainer):
     """Name and verify the independently optimized PROPOSED_V2 losses."""
