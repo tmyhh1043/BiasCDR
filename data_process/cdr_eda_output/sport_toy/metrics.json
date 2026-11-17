@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "source_label": "sport",
+    "target_label": "toy",
+    "source_file": "/home/student/Programs/code/datasets/sport_toy/sport/sport_inter.csv",
+    "target_file": "/home/student/Programs/code/datasets/sport_toy/toy/toy_inter.csv",
+    "head_fraction": 0.2,
+    "source_interactions": 325958,
+    "target_interactions": 456559,
+    "source_users": 28190,
+    "target_users": 28190,
+    "common_users": 28190
+  },
+  "analysis_1": {
+    "sport": {
+      "n_users": 28190.0,
+      "mean": 0.4998322120647544,
+      "sd": 0.2009830539118321,
+      "kurtosis_excess": -0.17385029087497772,
+      "iqr": 0.25290697674418605,
+      "bic_k1": -10444.417510455276,
+      "bic_k2": -10412.975067267455,
+      "preferred_k": 1
+    },
+    "toy": {
+      "n_users": 28190.0,
+      "mean": 0.4793105055130065,
+      "sd": 0.1963195274746068,
+      "kurtosis_excess": -0.023118113231840987,
+      "iqr": 0.24705882352941172,
+      "bic_k1": -11768.05198532701,
+      "bic_k2": -11611.131359838217,
+      "preferred_k": 1
+    }
+  },
+  "analysis_2": {
+    "n": 28190.0,
+    "pearson_r": 0.12128139599757559,
+    "pearson_p": 7.749435921524164e-93,
+    "spearman_rho": 0.12867940896194893,
+    "spearman_p": 2.317201919506239e-104
+  },
+  "analysis_3": {
+    "sport": {
+      "n": 28190.0,
+      "pearson_r": -0.1449253482255756,
+      "pearson_p": 3.8487242183805885e-132,
+      "spearman_rho": -0.1779659230484198,
+      "spearman_p": 2.6785206548932846e-199
+    },
+    "toy": {
+      "n": 28190.0,
+      "pearson_r": -0.05987485256576009,
+      "pearson_p": 8.174661767446495e-24,
+      "spearman_rho": -0.051888074286073047,
+      "spearman_p": 2.8458694677452724e-18
+    }
+  },
+  "analysis_4": {
+    "sport": {
+      "n_items": 32627,
+      "n_head_items": 6526,
+      "gini": 0.38847496291037387
+    },
+    "toy": {
+      "n_items": 44800,
+      "n_head_items": 8960,
+      "gini": 0.39532572064500804
+    }
+  }
+}

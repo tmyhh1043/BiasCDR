@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "source_label": "phone",
+    "target_label": "cloth",
+    "source_file": "/home/student/Programs/code/datasets/phone_cloth/phone/phone_inter.csv",
+    "target_file": "/home/student/Programs/code/datasets/phone_cloth/cloth/cloth_inter.csv",
+    "head_fraction": 0.2,
+    "source_interactions": 940086,
+    "target_interactions": 1728346,
+    "source_users": 116681,
+    "target_users": 116681,
+    "common_users": 116681
+  },
+  "analysis_1": {
+    "phone": {
+      "n_users": 116681.0,
+      "mean": 0.6219366238047822,
+      "sd": 0.20888106749450785,
+      "kurtosis_excess": -0.277399776252758,
+      "iqr": 0.30000000000000004,
+      "bic_k1": -34293.94691979195,
+      "bic_k2": -35790.49447176864,
+      "preferred_k": 2
+    },
+    "cloth": {
+      "n_users": 116681.0,
+      "mean": 0.6200990488669916,
+      "sd": 0.2006254544029055,
+      "kurtosis_excess": -0.284093435976593,
+      "iqr": 0.2777777777777778,
+      "bic_k1": -43704.33400104753,
+      "bic_k2": -46799.83836210196,
+      "preferred_k": 2
+    }
+  },
+  "analysis_2": {
+    "n": 116681.0,
+    "pearson_r": 0.15141855496835266,
+    "pearson_p": 0.0,
+    "spearman_rho": 0.1452406218066165,
+    "spearman_p": 0.0
+  },
+  "analysis_3": {
+    "phone": {
+      "n": 116681.0,
+      "pearson_r": -0.07725351532606448,
+      "pearson_p": 6.543898390716345e-154,
+      "spearman_rho": -0.06362345956058432,
+      "spearman_p": 6.2363572588076114e-105
+    },
+    "cloth": {
+      "n": 116681.0,
+      "pearson_r": -0.23135561515395342,
+      "pearson_p": 0.0,
+      "spearman_rho": -0.16414354718850224,
+      "spearman_p": 0.0
+    }
+  },
+  "analysis_4": {
+    "phone": {
+      "n_items": 59806,
+      "n_head_items": 11962,
+      "gini": 0.5482641666234938
+    },
+    "cloth": {
+      "n_items": 132007,
+      "n_head_items": 26402,
+      "gini": 0.46506101200845484
+    }
+  }
+}

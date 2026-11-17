@@ -1,0 +1,466 @@
+{
+  "checkpoint": "/home/student/Programs/code/Pro_2026/saved/proposed_ablation/full/AmazonPhone_AmazonSport-PROPOSED-ADDITIVE-seed2024.pth",
+  "dataset": "{'source_domain': 'AmazonPhone_AmazonSport', 'target_domain': 'AmazonSport_AmazonPhone'}",
+  "seed": 2024,
+  "split": "test",
+  "design": "Frozen saved weights; original random split and candidate masks.",
+  "group_definitions": {
+    "target_history": "Original target train interactions: 0, 1-3, 4-10, 11+.",
+    "item_popularity": "Among target train-warm items: top 20% head, next 30% middle, rest tail; zero-degree items cold.",
+    "source_popularity": "Terciles of mean log(1 + source item train degree) consumed by the user.",
+    "metric_averaging": "Recall uses pooled positive interactions; NDCG averages over users with positives."
+  },
+  "source_popularity_cutoffs": [
+    2.2848189948601725,
+    2.7226339544645133
+  ],
+  "timestamp": {
+    "available": false,
+    "reason": "raw file missing: dataset/AmazonSport_AmazonPhone/AmazonSport_AmazonPhone/AmazonSport_AmazonPhone.inter",
+    "tercile_cutoffs": []
+  },
+  "cross_domain_correspondence": {
+    "users": 2000,
+    "same_user_mean_cosine": 0.6609544540664801,
+    "random_pair_mean_cosine": 0.03246260397398967,
+    "same_user_retrieval@1": 0.85,
+    "same_user_retrieval@10": 0.9675,
+    "random_retrieval@10": 0.005,
+    "meaning": "Representation correspondence, not a causal source-shuffle recommender test."
+  },
+  "inference_graph_thinning": {
+    "1.0": {
+      "requested_keep_rate": 1.0,
+      "retained_train_edge_fraction": 1.0,
+      "meaning": "Inference-time graph thinning with frozen weights; no sparse-data retraining.",
+      "overall": {
+        "users": 33027,
+        "positives": 65862,
+        "recall@20": 0.02001153927909872,
+        "ndcg@20": 0.010207132399302652
+      },
+      "target_history_groups": {
+        "zero": {
+          "users": 0,
+          "positives": 0,
+          "recall@20": null,
+          "ndcg@20": null
+        },
+        "1_to_3": {
+          "users": 6893,
+          "positives": 6893,
+          "recall@20": 0.022051356448571015,
+          "ndcg@20": 0.008735867424621234
+        },
+        "4_to_10": {
+          "users": 21111,
+          "positives": 29889,
+          "recall@20": 0.021713673926862725,
+          "ndcg@20": 0.009867724191307853
+        },
+        "11_plus": {
+          "users": 5023,
+          "positives": 29080,
+          "recall@20": 0.017778541953232464,
+          "ndcg@20": 0.01365261839362004
+        }
+      },
+      "source_popularity_groups": {
+        "low": {
+          "users": 11009,
+          "positives": 20602,
+          "recall@20": 0.017328414717017765,
+          "ndcg@20": 0.009145955457201732
+        },
+        "middle": {
+          "users": 11009,
+          "positives": 25137,
+          "recall@20": 0.019015793451883676,
+          "ndcg@20": 0.009516960776784978
+        },
+        "high": {
+          "users": 11009,
+          "positives": 20123,
+          "recall@20": 0.02400238533021915,
+          "ndcg@20": 0.011958480963921157
+        },
+        "none": {
+          "users": 0,
+          "positives": 0,
+          "recall@20": null,
+          "ndcg@20": null
+        }
+      },
+      "item_popularity_groups": {
+        "head": {
+          "positives": 31187,
+          "hits": 1315,
+          "recall@20": 0.04216500464937314
+        },
+        "middle": {
+          "positives": 14381,
+          "hits": 2,
+          "recall@20": 0.0001390723871775259
+        },
+        "tail": {
+          "positives": 13202,
+          "hits": 1,
+          "recall@20": 7.57460990758976e-05
+        },
+        "cold": {
+          "positives": 7092,
+          "hits": 0,
+          "recall@20": 0.0
+        }
+      },
+      "test_timestamp_groups": {
+        "older": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        },
+        "middle": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        },
+        "recent": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        }
+      },
+      "popularity_diversity": {
+        "average_train_popularity@20": 80.23111242316892,
+        "catalog_coverage@20": 0.2701314344422007,
+        "exposure_gini@20": 0.9858007533345234,
+        "warm_tail_exposure@20": 0.01831834559602749
+      }
+    },
+    "0.75": {
+      "requested_keep_rate": 0.75,
+      "retained_train_edge_fraction": 0.8063275644071483,
+      "meaning": "Inference-time graph thinning with frozen weights; no sparse-data retraining.",
+      "overall": {
+        "users": 33027,
+        "positives": 65862,
+        "recall@20": 0.019950806231210712,
+        "ndcg@20": 0.010042642692532732
+      },
+      "target_history_groups": {
+        "zero": {
+          "users": 0,
+          "positives": 0,
+          "recall@20": null,
+          "ndcg@20": null
+        },
+        "1_to_3": {
+          "users": 6893,
+          "positives": 6893,
+          "recall@20": 0.020890758740751487,
+          "ndcg@20": 0.00819293730816248
+        },
+        "4_to_10": {
+          "users": 21111,
+          "positives": 29889,
+          "recall@20": 0.021747131051557428,
+          "ndcg@20": 0.009807482234742619
+        },
+        "11_plus": {
+          "users": 5023,
+          "positives": 29080,
+          "recall@20": 0.017881705639614855,
+          "ndcg@20": 0.013569318312455171
+        }
+      },
+      "source_popularity_groups": {
+        "low": {
+          "users": 11009,
+          "positives": 20602,
+          "recall@20": 0.01810503834579167,
+          "ndcg@20": 0.009046161021002246
+        },
+        "middle": {
+          "users": 11009,
+          "positives": 25137,
+          "recall@20": 0.018339499542507062,
+          "ndcg@20": 0.009160717351845994
+        },
+        "high": {
+          "users": 11009,
+          "positives": 20123,
+          "recall@20": 0.023853302191522138,
+          "ndcg@20": 0.011921049704749859
+        },
+        "none": {
+          "users": 0,
+          "positives": 0,
+          "recall@20": null,
+          "ndcg@20": null
+        }
+      },
+      "item_popularity_groups": {
+        "head": {
+          "positives": 31187,
+          "hits": 1310,
+          "recall@20": 0.04200468143777856
+        },
+        "middle": {
+          "positives": 14381,
+          "hits": 1,
+          "recall@20": 6.953619358876295e-05
+        },
+        "tail": {
+          "positives": 13202,
+          "hits": 3,
+          "recall@20": 0.00022723829722769278
+        },
+        "cold": {
+          "positives": 7092,
+          "hits": 0,
+          "recall@20": 0.0
+        }
+      },
+      "test_timestamp_groups": {
+        "older": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        },
+        "middle": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        },
+        "recent": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        }
+      },
+      "popularity_diversity": {
+        "average_train_popularity@20": 79.18407060889575,
+        "catalog_coverage@20": 0.2733198710454529,
+        "exposure_gini@20": 0.9851173839646434,
+        "warm_tail_exposure@20": 0.01865746207648288
+      }
+    },
+    "0.5": {
+      "requested_keep_rate": 0.5,
+      "retained_train_edge_fraction": 0.5371785682647316,
+      "meaning": "Inference-time graph thinning with frozen weights; no sparse-data retraining.",
+      "overall": {
+        "users": 33027,
+        "positives": 65862,
+        "recall@20": 0.018979077465002582,
+        "ndcg@20": 0.009529046795297258
+      },
+      "target_history_groups": {
+        "zero": {
+          "users": 0,
+          "positives": 0,
+          "recall@20": null,
+          "ndcg@20": null
+        },
+        "1_to_3": {
+          "users": 6893,
+          "positives": 6893,
+          "recall@20": 0.019149862179022197,
+          "ndcg@20": 0.007757060671042747
+        },
+        "4_to_10": {
+          "users": 21111,
+          "positives": 29889,
+          "recall@20": 0.02094416005888454,
+          "ndcg@20": 0.00930787109973558
+        },
+        "11_plus": {
+          "users": 5023,
+          "positives": 29080,
+          "recall@20": 0.016918844566712516,
+          "ndcg@20": 0.012890293154741536
+        }
+      },
+      "source_popularity_groups": {
+        "low": {
+          "users": 11009,
+          "positives": 20602,
+          "recall@20": 0.01718279778662266,
+          "ndcg@20": 0.008704175966846292
+        },
+        "middle": {
+          "users": 11009,
+          "positives": 25137,
+          "recall@20": 0.017782551617138084,
+          "ndcg@20": 0.008862783759825603
+        },
+        "high": {
+          "users": 11009,
+          "positives": 20123,
+          "recall@20": 0.022312776424986334,
+          "ndcg@20": 0.011020180659219872
+        },
+        "none": {
+          "users": 0,
+          "positives": 0,
+          "recall@20": null,
+          "ndcg@20": null
+        }
+      },
+      "item_popularity_groups": {
+        "head": {
+          "positives": 31187,
+          "hits": 1246,
+          "recall@20": 0.039952544329368005
+        },
+        "middle": {
+          "positives": 14381,
+          "hits": 2,
+          "recall@20": 0.0001390723871775259
+        },
+        "tail": {
+          "positives": 13202,
+          "hits": 2,
+          "recall@20": 0.0001514921981517952
+        },
+        "cold": {
+          "positives": 7092,
+          "hits": 0,
+          "recall@20": 0.0
+        }
+      },
+      "test_timestamp_groups": {
+        "older": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        },
+        "middle": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        },
+        "recent": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        }
+      },
+      "popularity_diversity": {
+        "average_train_popularity@20": 74.72070124443637,
+        "catalog_coverage@20": 0.2772404671650075,
+        "exposure_gini@20": 0.9831935450655913,
+        "warm_tail_exposure@20": 0.020191055802827988
+      }
+    },
+    "0.25": {
+      "requested_keep_rate": 0.25,
+      "retained_train_edge_fraction": 0.29590242488181623,
+      "meaning": "Inference-time graph thinning with frozen weights; no sparse-data retraining.",
+      "overall": {
+        "users": 33027,
+        "positives": 65862,
+        "recall@20": 0.01714190276639033,
+        "ndcg@20": 0.008290639816592482
+      },
+      "target_history_groups": {
+        "zero": {
+          "users": 0,
+          "positives": 0,
+          "recall@20": null,
+          "ndcg@20": null
+        },
+        "1_to_3": {
+          "users": 6893,
+          "positives": 6893,
+          "recall@20": 0.01798926447120267,
+          "ndcg@20": 0.0069854421793680895
+        },
+        "4_to_10": {
+          "users": 21111,
+          "positives": 29889,
+          "recall@20": 0.018033390210445314,
+          "ndcg@20": 0.007869477354491167
+        },
+        "11_plus": {
+          "users": 5023,
+          "positives": 29080,
+          "recall@20": 0.016024759284731776,
+          "ndcg@20": 0.011851835924657038
+        }
+      },
+      "source_popularity_groups": {
+        "low": {
+          "users": 11009,
+          "positives": 20602,
+          "recall@20": 0.015289777691486263,
+          "ndcg@20": 0.0072873248223798695
+        },
+        "middle": {
+          "users": 11009,
+          "positives": 25137,
+          "recall@20": 0.016071925846361936,
+          "ndcg@20": 0.007655751571519455
+        },
+        "high": {
+          "users": 11009,
+          "positives": 20123,
+          "recall@20": 0.02037469562192516,
+          "ndcg@20": 0.009928843055878078
+        },
+        "none": {
+          "users": 0,
+          "positives": 0,
+          "recall@20": null,
+          "ndcg@20": null
+        }
+      },
+      "item_popularity_groups": {
+        "head": {
+          "positives": 31187,
+          "hits": 1126,
+          "recall@20": 0.03610478725109821
+        },
+        "middle": {
+          "positives": 14381,
+          "hits": 3,
+          "recall@20": 0.00020860858076628887
+        },
+        "tail": {
+          "positives": 13202,
+          "hits": 0,
+          "recall@20": 0.0
+        },
+        "cold": {
+          "positives": 7092,
+          "hits": 0,
+          "recall@20": 0.0
+        }
+      },
+      "test_timestamp_groups": {
+        "older": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        },
+        "middle": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        },
+        "recent": {
+          "positives": 0,
+          "hits": 0,
+          "recall@20": null
+        }
+      },
+      "popularity_diversity": {
+        "average_train_popularity@20": 65.89515547885064,
+        "catalog_coverage@20": 0.2666477722275363,
+        "exposure_gini@20": 0.9799896072003422,
+        "warm_tail_exposure@20": 0.023715444938989312
+      }
+    }
+  },
+  "elapsed_seconds": 854.47
+}

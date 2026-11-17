@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "source_label": "cloth",
+    "target_label": "sport",
+    "source_file": "/home/student/Programs/code/datasets/cloth_sport/cloth/cloth_inter.csv",
+    "target_file": "/home/student/Programs/code/datasets/cloth_sport/sport/sport_inter.csv",
+    "head_fraction": 0.2,
+    "source_interactions": 2222238,
+    "target_interactions": 1474955,
+    "source_users": 149520,
+    "target_users": 149520,
+    "common_users": 149520
+  },
+  "analysis_1": {
+    "cloth": {
+      "n_users": 149520.0,
+      "mean": 0.6434674113125468,
+      "sd": 0.19886051748985029,
+      "kurtosis_excess": -0.23371770545899118,
+      "iqr": 0.30000000000000004,
+      "bic_k1": -58652.73020806548,
+      "bic_k2": -63466.88008583975,
+      "preferred_k": 2
+    },
+    "sport": {
+      "n_users": 149520.0,
+      "mean": 0.612484282341987,
+      "sd": 0.20366953224683354,
+      "kurtosis_excess": -0.24020635173205251,
+      "iqr": 0.2777777777777778,
+      "bic_k1": -51507.14593018077,
+      "bic_k2": -53000.50477528852,
+      "preferred_k": 2
+    }
+  },
+  "analysis_2": {
+    "n": 149520.0,
+    "pearson_r": 0.18540496634272244,
+    "pearson_p": 0.0,
+    "spearman_rho": 0.1667356292920818,
+    "spearman_p": 0.0
+  },
+  "analysis_3": {
+    "cloth": {
+      "n": 149520.0,
+      "pearson_r": -0.24805728376832448,
+      "pearson_p": 0.0,
+      "spearman_rho": -0.1927031467331062,
+      "spearman_p": 0.0
+    },
+    "sport": {
+      "n": 149520.0,
+      "pearson_r": -0.1237875068394304,
+      "pearson_p": 0.0,
+      "spearman_rho": -0.10456954981676399,
+      "spearman_p": 0.0
+    }
+  },
+  "analysis_4": {
+    "cloth": {
+      "n_items": 149490,
+      "n_head_items": 29898,
+      "gini": 0.4893530197958471
+    },
+    "sport": {
+      "n_items": 94057,
+      "n_head_items": 18812,
+      "gini": 0.5206881323738597
+    }
+  }
+}

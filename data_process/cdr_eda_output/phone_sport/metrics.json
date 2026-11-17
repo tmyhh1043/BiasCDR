@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "source_label": "phone",
+    "target_label": "sport",
+    "source_file": "/home/student/Programs/code/datasets/phone_sport/phone/phone_inter.csv",
+    "target_file": "/home/student/Programs/code/datasets/phone_sport/sport/sport_inter.csv",
+    "head_fraction": 0.2,
+    "source_interactions": 294003,
+    "target_interactions": 392123,
+    "source_users": 32554,
+    "target_users": 32554,
+    "common_users": 32554
+  },
+  "analysis_1": {
+    "phone": {
+      "n_users": 32554.0,
+      "mean": 0.5552394074184895,
+      "sd": 0.20765123571683863,
+      "kurtosis_excess": -0.26988649161725453,
+      "iqr": 0.29999999999999993,
+      "bic_k1": -9938.931641920788,
+      "bic_k2": -9906.5101368312,
+      "preferred_k": 1
+    },
+    "sport": {
+      "n_users": 32554.0,
+      "mean": 0.5148512051367646,
+      "sd": 0.19570764885368827,
+      "kurtosis_excess": -0.13878067845894426,
+      "iqr": 0.24433491765965992,
+      "bic_k1": -13795.796921153396,
+      "bic_k2": -13729.216734418289,
+      "preferred_k": 1
+    }
+  },
+  "analysis_2": {
+    "n": 32554.0,
+    "pearson_r": 0.11780070476468896,
+    "pearson_p": 6.250377693912665e-101,
+    "spearman_rho": 0.1250223291270287,
+    "spearman_p": 1.5461858617262686e-113
+  },
+  "analysis_3": {
+    "phone": {
+      "n": 32554.0,
+      "pearson_r": -0.09875031907318575,
+      "pearson_p": 2.4063453592399516e-71,
+      "spearman_rho": -0.09651184403860213,
+      "spearman_p": 3.2403373305806886e-68
+    },
+    "sport": {
+      "n": 32554.0,
+      "pearson_r": -0.12776158298685222,
+      "pearson_p": 1.6064049108493192e-118,
+      "spearman_rho": -0.1274526864650041,
+      "spearman_p": 5.934395379353899e-118
+    }
+  },
+  "analysis_4": {
+    "phone": {
+      "n_items": 25657,
+      "n_head_items": 5132,
+      "gini": 0.47253687969466274
+    },
+    "sport": {
+      "n_items": 40025,
+      "n_head_items": 8005,
+      "gini": 0.4134392914734497
+    }
+  }
+}

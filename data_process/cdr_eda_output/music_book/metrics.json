@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "source_label": "music",
+    "target_label": "book",
+    "source_file": "/home/student/Programs/code/datasets/music_book/music/music_inter.csv",
+    "target_file": "/home/student/Programs/code/datasets/music_book/book/book_inter.csv",
+    "head_fraction": 0.2,
+    "source_interactions": 193929,
+    "target_interactions": 175858,
+    "source_users": 11158,
+    "target_users": 11158,
+    "common_users": 11158
+  },
+  "analysis_1": {
+    "music": {
+      "n_users": 11158.0,
+      "mean": 0.5237056670386611,
+      "sd": 0.22859522446396469,
+      "kurtosis_excess": -0.4187298233007466,
+      "iqr": 0.29166666666666663,
+      "bic_k1": -1251.3346762754545,
+      "bic_k2": -1297.1033624510928,
+      "preferred_k": 2
+    },
+    "book": {
+      "n_users": 11158.0,
+      "mean": 0.44901416793682225,
+      "sd": 0.21117108777578045,
+      "kurtosis_excess": -0.2455271430518513,
+      "iqr": 0.3,
+      "bic_k1": -3020.6411800412984,
+      "bic_k2": -3044.842726871253,
+      "preferred_k": 2
+    }
+  },
+  "analysis_2": {
+    "n": 11158.0,
+    "pearson_r": 0.13493820530382383,
+    "pearson_p": 1.6978099534345228e-46,
+    "spearman_rho": 0.13371073886718887,
+    "spearman_p": 1.1151511759834959e-45
+  },
+  "analysis_3": {
+    "music": {
+      "n": 11158.0,
+      "pearson_r": -0.013001299541902748,
+      "pearson_p": 0.16967461004482542,
+      "spearman_rho": -0.04854409394141433,
+      "spearman_p": 2.893848377530905e-07
+    },
+    "book": {
+      "n": 11158.0,
+      "pearson_r": -0.052889619654701445,
+      "pearson_p": 2.2694798948861777e-08,
+      "spearman_rho": -0.030388360942135553,
+      "spearman_p": 0.0013257440990207736
+    }
+  },
+  "analysis_4": {
+    "music": {
+      "n_items": 27792,
+      "n_head_items": 5559,
+      "gini": 0.44770163597374224
+    },
+    "book": {
+      "n_items": 23062,
+      "n_head_items": 4613,
+      "gini": 0.32891093397497273
+    }
+  }
+}

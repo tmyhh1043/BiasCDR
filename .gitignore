@@ -21,7 +21,6 @@ dataset/
 datasets/
 !recbole_cdr/properties/dataset/
 !recbole_cdr/properties/dataset/*.yaml
-results/
 saved/
 log/
 logs/

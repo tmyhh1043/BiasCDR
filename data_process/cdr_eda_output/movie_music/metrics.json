@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "source_label": "movie",
+    "target_label": "music",
+    "source_file": "/home/student/Programs/code/datasets/movie_music/movie/movie_inter.csv",
+    "target_file": "/home/student/Programs/code/datasets/movie_music/music/music_inter.csv",
+    "head_fraction": 0.2,
+    "source_interactions": 635926,
+    "target_interactions": 475301,
+    "source_users": 28281,
+    "target_users": 28281,
+    "common_users": 28281
+  },
+  "analysis_1": {
+    "movie": {
+      "n_users": 28281.0,
+      "mean": 0.5280508468189165,
+      "sd": 0.2174987605392527,
+      "kurtosis_excess": -0.389248894244016,
+      "iqr": 0.2866666666666666,
+      "bic_k1": -6011.343840556072,
+      "bic_k2": -6148.731923677988,
+      "preferred_k": 2
+    },
+    "music": {
+      "n_users": 28281.0,
+      "mean": 0.5225283932993684,
+      "sd": 0.23747793448879953,
+      "kurtosis_excess": -0.5233339010348068,
+      "iqr": 0.32867132867132864,
+      "bic_k1": -1040.5870513337575,
+      "bic_k2": -1380.885833684781,
+      "preferred_k": 2
+    }
+  },
+  "analysis_2": {
+    "n": 28281.0,
+    "pearson_r": 0.19850486663131112,
+    "pearson_p": 3.252128257797585e-249,
+    "spearman_rho": 0.1979244977151701,
+    "spearman_p": 9.639191385846472e-248
+  },
+  "analysis_3": {
+    "movie": {
+      "n": 28281.0,
+      "pearson_r": -0.010934903290202077,
+      "pearson_p": 0.0659311408280486,
+      "spearman_rho": -0.01519282519437573,
+      "spearman_p": 0.010618621011812976
+    },
+    "music": {
+      "n": 28281.0,
+      "pearson_r": -0.009481958049861794,
+      "pearson_p": 0.11081468067289289,
+      "spearman_rho": -0.03049928848975748,
+      "spearman_p": 2.897137667057148e-07
+    }
+  },
+  "analysis_4": {
+    "movie": {
+      "n_items": 48224,
+      "n_head_items": 9645,
+      "gini": 0.4464161125121917
+    },
+    "music": {
+      "n_items": 38757,
+      "n_head_items": 7752,
+      "gini": 0.4335013495556945
+    }
+  }
+}

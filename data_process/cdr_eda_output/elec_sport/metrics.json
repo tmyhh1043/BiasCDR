@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "source_label": "elec",
+    "target_label": "sport",
+    "source_file": "/home/student/Programs/code/datasets/elec_sport/elec/elec_inter.csv",
+    "target_file": "/home/student/Programs/code/datasets/elec_sport/sport/sport_inter.csv",
+    "head_fraction": 0.2,
+    "source_interactions": 2315691,
+    "target_interactions": 1593017,
+    "source_users": 160580,
+    "target_users": 160580,
+    "common_users": 160580
+  },
+  "analysis_1": {
+    "elec": {
+      "n_users": 160580.0,
+      "mean": 0.6746297677245028,
+      "sd": 0.1883940605716643,
+      "kurtosis_excess": 0.17320652954275673,
+      "iqr": 0.22857142857142865,
+      "bic_k1": -80357.2438229017,
+      "bic_k2": -88657.36855318704,
+      "preferred_k": 2
+    },
+    "sport": {
+      "n_users": 160580.0,
+      "mean": 0.6192572864125317,
+      "sd": 0.20620854895402793,
+      "kurtosis_excess": -0.24152705442607747,
+      "iqr": 0.30000000000000004,
+      "bic_k1": -51339.73314297431,
+      "bic_k2": -54219.672578275946,
+      "preferred_k": 2
+    }
+  },
+  "analysis_2": {
+    "n": 160580.0,
+    "pearson_r": 0.24092001800681592,
+    "pearson_p": 0.0,
+    "spearman_rho": 0.2035103258809431,
+    "spearman_p": 0.0
+  },
+  "analysis_3": {
+    "elec": {
+      "n": 160580.0,
+      "pearson_r": -0.13572083276553903,
+      "pearson_p": 0.0,
+      "spearman_rho": -0.10201954748012892,
+      "spearman_p": 0.0
+    },
+    "sport": {
+      "n": 160580.0,
+      "pearson_r": -0.12667726376921645,
+      "pearson_p": 0.0,
+      "spearman_rho": -0.09692262055340088,
+      "spearman_p": 0.0
+    }
+  },
+  "analysis_4": {
+    "elec": {
+      "n_items": 117483,
+      "n_head_items": 23497,
+      "gini": 0.5815057723935326
+    },
+    "sport": {
+      "n_items": 94893,
+      "n_head_items": 18979,
+      "gini": 0.5257343650151156
+    }
+  }
+}

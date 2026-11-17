@@ -1,0 +1,339 @@
+{
+  "checkpoint": "/home/student/Programs/code/Pro_2026/saved/proposed_ablation/no_orth/AmazonSport_AmazonPhone-PROPOSED-ADDITIVE-seed2024.pth",
+  "variant": "no_orth",
+  "dataset": "{'source_domain': 'AmazonSport_AmazonPhone', 'target_domain': 'AmazonPhone_AmazonSport'}",
+  "seed": 2024,
+  "split": "test",
+  "loss_weights": {
+    "lambda_cl": 0.01,
+    "lambda_pop": 0.01,
+    "lambda_orth": 0.0,
+    "lambda_multi": 0.05
+  },
+  "interpretation": "Popularity is an observed training statistic; matched unobserved items are not verified negatives.",
+  "score_interpretation": "bias_dot is diagnostic only: its user-item dot product was not trained as a ranking score.",
+  "source": {
+    "item_popularity": {
+      "preference": {
+        "count": 84681,
+        "train_count": 50808,
+        "valid_count": 16936,
+        "test_count": 16937,
+        "alpha": 100.0,
+        "probe": {
+          "r2": 0.3927589457204984,
+          "mae": 0.4250964497351411,
+          "pearson": 0.6267163540695113
+        },
+        "mean_baseline": {
+          "r2": -9.181492187870788e-06,
+          "mae": 0.5441893089999704,
+          "pearson": null
+        }
+      },
+      "bias": {
+        "count": 84681,
+        "train_count": 50808,
+        "valid_count": 16936,
+        "test_count": 16937,
+        "alpha": 10.0,
+        "probe": {
+          "r2": 0.9997410627989365,
+          "mae": 0.004703796393697285,
+          "pearson": 0.9998705708411887
+        },
+        "mean_baseline": {
+          "r2": -9.181492187870788e-06,
+          "mae": 0.5441893089999704,
+          "pearson": null
+        }
+      },
+      "preference_norm": {
+        "count": 84681,
+        "train_count": 50808,
+        "valid_count": 16936,
+        "test_count": 16937,
+        "alpha": 10.0,
+        "probe": {
+          "r2": 0.8193589138402743,
+          "mae": 0.22825015794971562,
+          "pearson": 0.9052737538125283
+        },
+        "mean_baseline": {
+          "r2": -9.181492187870788e-06,
+          "mae": 0.5441893089999704,
+          "pearson": null
+        }
+      },
+      "bias_norm": {
+        "count": 84681,
+        "train_count": 50808,
+        "valid_count": 16936,
+        "test_count": 16937,
+        "alpha": 0.1,
+        "probe": {
+          "r2": 0.7929293522035566,
+          "mae": 0.2787999822163961,
+          "pearson": 0.8905271338946458
+        },
+        "mean_baseline": {
+          "r2": -9.181492187870788e-06,
+          "mae": 0.5441893089999704,
+          "pearson": null
+        }
+      }
+    },
+    "user_consumed_popularity": {
+      "preference": {
+        "count": 33027,
+        "train_count": 19816,
+        "valid_count": 6605,
+        "test_count": 6606,
+        "alpha": 1000.0,
+        "probe": {
+          "r2": 0.2633342947761451,
+          "mae": 0.2983910172869037,
+          "pearson": 0.5133804585531383
+        },
+        "mean_baseline": {
+          "r2": -2.0467818404146243e-05,
+          "mae": 0.34700876674184095,
+          "pearson": null
+        }
+      },
+      "bias": {
+        "count": 33027,
+        "train_count": 19816,
+        "valid_count": 6605,
+        "test_count": 6606,
+        "alpha": 1.0,
+        "probe": {
+          "r2": 0.9999951664980882,
+          "mae": 0.00043357678461981543,
+          "pearson": 0.9999975833339374
+        },
+        "mean_baseline": {
+          "r2": -2.0467818404146243e-05,
+          "mae": 0.34700876674184095,
+          "pearson": null
+        }
+      },
+      "preference_norm": {
+        "count": 33027,
+        "train_count": 19816,
+        "valid_count": 6605,
+        "test_count": 6606,
+        "alpha": 1000.0,
+        "probe": {
+          "r2": 0.1413860666106821,
+          "mae": 0.3266609781299964,
+          "pearson": 0.3774578068387744
+        },
+        "mean_baseline": {
+          "r2": -2.0467818404146243e-05,
+          "mae": 0.34700876674184095,
+          "pearson": null
+        }
+      },
+      "bias_norm": {
+        "count": 33027,
+        "train_count": 19816,
+        "valid_count": 6605,
+        "test_count": 6606,
+        "alpha": 100.0,
+        "probe": {
+          "r2": 0.5406792664811986,
+          "mae": 0.23044718879738668,
+          "pearson": 0.7362386080883618
+        },
+        "mean_baseline": {
+          "r2": -2.0467818404146243e-05,
+          "mae": 0.34700876674184095,
+          "pearson": null
+        }
+      }
+    },
+    "item_orthogonality": {
+      "mean_abs_cosine": 0.10823497047149576,
+      "mean_squared_cosine": 0.017732429480990523
+    },
+    "user_orthogonality": {
+      "mean_abs_cosine": 0.12241399833914311,
+      "mean_squared_cosine": 0.02160366594338127
+    }
+  },
+  "target": {
+    "item_popularity": {
+      "preference": {
+        "count": 49009,
+        "train_count": 29405,
+        "valid_count": 9801,
+        "test_count": 9803,
+        "alpha": 1000.0,
+        "probe": {
+          "r2": 0.49324194579986824,
+          "mae": 0.3653728069406692,
+          "pearson": 0.7023230386074617
+        },
+        "mean_baseline": {
+          "r2": -2.6719500079153136e-06,
+          "mae": 0.5023628528437974,
+          "pearson": null
+        }
+      },
+      "bias": {
+        "count": 49009,
+        "train_count": 29405,
+        "valid_count": 9801,
+        "test_count": 9803,
+        "alpha": 100.0,
+        "probe": {
+          "r2": 0.9999623986429128,
+          "mae": 0.0020708646107675424,
+          "pearson": 0.9999812066865338
+        },
+        "mean_baseline": {
+          "r2": -2.6719500079153136e-06,
+          "mae": 0.5023628528437974,
+          "pearson": null
+        }
+      },
+      "preference_norm": {
+        "count": 49009,
+        "train_count": 29405,
+        "valid_count": 9801,
+        "test_count": 9803,
+        "alpha": 0.1,
+        "probe": {
+          "r2": 0.8692752443736144,
+          "mae": 0.18163245306195605,
+          "pearson": 0.9323956758093932
+        },
+        "mean_baseline": {
+          "r2": -2.6719500079153136e-06,
+          "mae": 0.5023628528437974,
+          "pearson": null
+        }
+      },
+      "bias_norm": {
+        "count": 49009,
+        "train_count": 29405,
+        "valid_count": 9801,
+        "test_count": 9803,
+        "alpha": 0.1,
+        "probe": {
+          "r2": 0.7797699696418687,
+          "mae": 0.26558581278650883,
+          "pearson": 0.883199426285709
+        },
+        "mean_baseline": {
+          "r2": -2.6719500079153136e-06,
+          "mae": 0.5023628528437974,
+          "pearson": null
+        }
+      }
+    },
+    "user_consumed_popularity": {
+      "preference": {
+        "count": 33027,
+        "train_count": 19816,
+        "valid_count": 6605,
+        "test_count": 6606,
+        "alpha": 100.0,
+        "probe": {
+          "r2": 0.3778243092751302,
+          "mae": 0.365551416307534,
+          "pearson": 0.6153602150492684
+        },
+        "mean_baseline": {
+          "r2": -0.000619098982119759,
+          "mae": 0.47576522861415954,
+          "pearson": null
+        }
+      },
+      "bias": {
+        "count": 33027,
+        "train_count": 19816,
+        "valid_count": 6605,
+        "test_count": 6606,
+        "alpha": 0.1,
+        "probe": {
+          "r2": 0.999999618586706,
+          "mae": 0.00010307999362104657,
+          "pearson": 0.9999998093063941
+        },
+        "mean_baseline": {
+          "r2": -0.000619098982119759,
+          "mae": 0.47576522861415954,
+          "pearson": null
+        }
+      },
+      "preference_norm": {
+        "count": 33027,
+        "train_count": 19816,
+        "valid_count": 6605,
+        "test_count": 6606,
+        "alpha": 0.1,
+        "probe": {
+          "r2": 0.3628655756339434,
+          "mae": 0.38384847282730716,
+          "pearson": 0.6024256628388005
+        },
+        "mean_baseline": {
+          "r2": -0.000619098982119759,
+          "mae": 0.47576522861415954,
+          "pearson": null
+        }
+      },
+      "bias_norm": {
+        "count": 33027,
+        "train_count": 19816,
+        "valid_count": 6605,
+        "test_count": 6606,
+        "alpha": 0.1,
+        "probe": {
+          "r2": 0.8797865510544132,
+          "mae": 0.1588100575319498,
+          "pearson": 0.9379703995769447
+        },
+        "mean_baseline": {
+          "r2": -0.000619098982119759,
+          "mae": 0.47576522861415954,
+          "pearson": null
+        }
+      }
+    },
+    "item_orthogonality": {
+      "mean_abs_cosine": 0.09513005203285937,
+      "mean_squared_cosine": 0.014119679393189082
+    },
+    "user_orthogonality": {
+      "mean_abs_cosine": 0.10054210576443669,
+      "mean_squared_cosine": 0.015475453232650364
+    }
+  },
+  "ranking": {
+    "users": 33027,
+    "positives": 48222,
+    "scores": {
+      "preference": {
+        "recall@20": 0.02953009000041475,
+        "ndcg@20": 0.013222334424709402,
+        "popularity_matched_pair_accuracy": 0.7483928497366348,
+        "matched_pairs": 48222
+      },
+      "bias_dot": {
+        "recall@20": 0.019368752851395627,
+        "ndcg@20": 0.009592423380544323,
+        "popularity_matched_pair_accuracy": 0.6395835925511177,
+        "matched_pairs": 48222
+      },
+      "popularity": {
+        "recall@20": 0.020654473062087845,
+        "ndcg@20": 0.010109446427027413,
+        "popularity_matched_pair_accuracy": 0.6396043299738708,
+        "matched_pairs": 48222
+      }
+    }
+  }
+}
