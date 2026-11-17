@@ -22,7 +22,7 @@ shuffle: True                   # (bool) Whether to shuffle the training data be
 
 
 # training settings
-train_epochs: ["BOTH:400"]  #Return both data in source domain and target domain
+train_epochs: ["BOTH:200"]  #Return both data in source domain and target domain
 train_batch_size: 2048
 learner: adam
 learning_rate: 0.0001
@@ -45,7 +45,7 @@ eval_args:
   mode: full
 repeatable: True
 metrics: ["MRR","Recall","NDCG","Hit"]
-topk: [20]
+topk: [10, 20, 30]
 full_sort_chunk_size: 2048
 fast_full_sort_eval: True
 eval_batch_size: 5000000
@@ -55,11 +55,15 @@ metric_decimal_place: 4
 # Test-only extra metrics and CSV export.
 # These are calculated only after the final test evaluation, not during validation.
 test_extra_metrics: True
+test_long_tail_metrics: True
+long_tail_item_ratio: 0.8
 test_extra_metrics_batch_size: 256
 test_extra_metrics_sample_size: ~
 test_extra_metrics_seed: 2022
 metrics_csv_path: results/test_metrics.csv
 metrics_csv_append: True
+metrics_csv_include_valid: False
+evaluate_extra_metrics_on_valid: False
 
 # Target-domain full-sort ranking evaluation.
 eval_neg_sample_args:

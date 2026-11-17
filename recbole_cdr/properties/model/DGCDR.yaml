@@ -1,10 +1,6 @@
 #state: "DEBUG"
-learning_rate: 0.0001
 
 gpu_id: 0
-full_sort_chunk_size: 2048
-fast_full_sort_eval: True
-eval_batch_size: 5000000
 embedding_size: 64  # (int) the embedding size
 mlp_hidden_size: [256]  # (int) hidden size of feature mapping
 loss_type: BPR  # (str) BPR:InputType.PAIRWISE; BCE:input_type = InputType.POINTWISE
@@ -32,6 +28,3 @@ item_mapping: False  # (bool) whether to use a non-linear mapping for item
 item_negative: True  # (bool) whether to apply item contrastive disentanglement
 item_disentangle: True  # (bool) whether to apply disentanglement and fusion to item
 preference_disentangle: True  # (bool) whether to disentangle features after GNN
-
-
-

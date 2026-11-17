@@ -1,16 +1,5 @@
 seed: 2022
 field_separator: ","
-#save_dataloaders: True
-#save_dataset: True
-embedding_size: 64
-learning_rate: 0.001
-
-# Training settings
-# 针对冷启动模拟场景下，对比方法BiTGCF的设置
-#eval_step: 0 #less than 1, 将不会在valid数据集上评估模型
-epochs: 400
-train_batch_size: 2048
-eval_batch_size: 20480
 
 #train_neg_sample_args: None
 

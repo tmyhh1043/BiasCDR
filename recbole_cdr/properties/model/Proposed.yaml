@@ -3,7 +3,6 @@
 # ==========================================
 embedding_size: 64
 n_layers: 3
-reg_weight: 0
 
 # ==========================================
 # Proposed Method Hyperparameters
@@ -21,9 +20,9 @@ tau: 0.1                  # InfoNCEおよび因果的バイアス依存度計算
 # Loss Weights (Objective Function)
 # ==========================================
 lambda_cl: 0.01         # メインのBPRの邪魔をしないよう少し下げる
-lambda_multi: 0.005     # 同上
 lambda_orth: 0.005      # 同上
 lambda_multi: 0.05        # マルチモーダルアライメント損失の重み
+lambda_pop: 0.01       # 長尾アイテムの推薦精度を改善するためのポピュラリティ損失の重み
 
 # ==========================================
 # Experiment & Metrics Logging
@@ -46,7 +45,7 @@ metrics_csv_param_keys:
 # ==========================================
 learning_rate: 0.001
 train_epochs: ["BOTH:200"]  # SourceとTargetを同時学習
-valid_start_epoch: 1
+valid_start_epoch: 20
 train_batch_size: 2048
 
 train_neg_sample_args:
@@ -59,7 +58,7 @@ train_neg_sample_args:
 # Evaluation Settings
 # ==========================================
 # Target-domain full-sort ranking evaluation.
-topk: [10, 20]
+topk: [10, 20, 30]
 record_valid_popularity_each_epoch: false
 valid_extra_metrics_batch_size: 256
 long_tail_item_ratio: 0.8

@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import csv
+import fcntl
 import os
+import tempfile
 from collections import OrderedDict
 
 import numpy as np
@@ -598,11 +600,11 @@ def append_metrics_csv(config, metrics):
 
     os.makedirs(os.path.dirname(csv_path) or ".", exist_ok=True)
     append = bool(_config_get(config, "metrics_csv_append", True))
-    mode = "a" if append else "w"
-    write_header = (not append) or (not os.path.exists(csv_path))
     dataset = _dataset_name(config)
     model = _config_get(config, "model", "")
+    seed = _config_get(config, "seed", "")
     param_keys = list(_config_get(config, "metrics_csv_param_keys", [])) if include_params else []
+    param_keys = [key for key in param_keys if key not in {"dataset", "seed", "model"}]
     param_values = OrderedDict()
     for key in param_keys:
         value = _config_get(config, key, "")
@@ -611,24 +613,48 @@ def append_metrics_csv(config, metrics):
         param_values[key] = value
 
     metric_keys = list(metrics.keys())
-    fieldnames = ["dataset", "model"] + param_keys + metric_keys
-    if append and os.path.exists(csv_path):
-        with open(csv_path, "r", newline="", encoding="utf-8") as f:
-            reader = csv.reader(f)
-            existing_header = next(reader, None)
-        if existing_header != fieldnames:
-            mode = "w"
-            write_header = True
+    base_fields = ["dataset", "seed", "model"]
+    fieldnames = base_fields + list(dict.fromkeys(param_keys + metric_keys))
+    row = {"dataset": dataset, "seed": seed, "model": model}
+    row.update(param_values)
+    row.update(metrics)
 
-    with open(csv_path, mode, newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        if write_header:
-            writer.writeheader()
-        row = {
-            "dataset": dataset,
-            "model": model,
-        }
-        row.update(param_values)
-        row.update(metrics)
-        writer.writerow(row)
+    # Proposed and baseline processes may write the same CSV concurrently.
+    # Keep old rows when a new seed column or model-specific metric is added.
+    with open(csv_path + ".lock", "a+", encoding="utf-8") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        existing_rows = []
+        if append and os.path.exists(csv_path):
+            with open(csv_path, "r", newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                existing_header = reader.fieldnames
+                if existing_header:
+                    fieldnames = base_fields + [
+                        key for key in dict.fromkeys(existing_header + fieldnames)
+                        if key not in base_fields
+                    ]
+                    if existing_header != fieldnames:
+                        existing_rows = list(reader)
+                else:
+                    existing_header = None
+        else:
+            existing_header = None
+
+        if append and existing_header == fieldnames:
+            with open(csv_path, "a", newline="", encoding="utf-8") as f:
+                csv.DictWriter(f, fieldnames=fieldnames).writerow(row)
+        else:
+            fd, temporary_path = tempfile.mkstemp(
+                prefix=".metrics-", suffix=".csv", dir=os.path.dirname(csv_path) or "."
+            )
+            try:
+                with os.fdopen(fd, "w", newline="", encoding="utf-8") as f:
+                    writer = csv.DictWriter(f, fieldnames=fieldnames)
+                    writer.writeheader()
+                    writer.writerows(existing_rows)
+                    writer.writerow(row)
+                os.replace(temporary_path, csv_path)
+            finally:
+                if os.path.exists(temporary_path):
+                    os.unlink(temporary_path)
     return csv_path

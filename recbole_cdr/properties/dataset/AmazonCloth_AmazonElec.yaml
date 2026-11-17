@@ -1,0 +1,56 @@
+seed: 2022
+field_separator: ","
+
+source_domain:
+  dataset: AmazonCloth_AmazonElec
+  data_path: ./dataset
+  multimodal_feat_path: ./dataset/AmazonCloth_AmazonElec
+  text_feat_file: cloth_text_feat.npy
+  visual_feat_file: cloth_visual_feat.npy
+  review_feat_file: cloth_review_feat.npy
+  user_map_file: user_id_map.csv
+  item_map_file: item_id_map.csv
+  item_feat_id_field: item_id
+  item_feat_index_field: itemID
+  USER_ID_FIELD: user_id
+  ITEM_ID_FIELD: item_id
+  RATING_FIELD: rating
+  TIME_FIELD: timestamp
+  NEG_PREFIX: neg_
+  LABEL_FIELD: label
+  threshold:
+    rating: 4
+  load_col:
+    inter: [user_id, item_id, rating]
+  user_inter_num_interval: "[0,inf)"
+  item_inter_num_interval: "[0,inf)"
+  val_interval:
+    rating: "[0,inf)"
+  drop_filter_field: true
+
+target_domain:
+  dataset: AmazonElec_AmazonCloth
+  data_path: ./dataset
+  multimodal_feat_path: ./dataset/AmazonElec_AmazonCloth
+  text_feat_file: elec_text_feat.npy
+  visual_feat_file: elec_visual_feat.npy
+  review_feat_file: elec_review_feat.npy
+  user_map_file: user_id_map.csv
+  item_map_file: item_id_map.csv
+  item_feat_id_field: item_id
+  item_feat_index_field: itemID
+  USER_ID_FIELD: user_id
+  ITEM_ID_FIELD: item_id
+  RATING_FIELD: rating
+  TIME_FIELD: timestamp
+  NEG_PREFIX: neg_
+  LABEL_FIELD: label
+  threshold:
+    rating: 4
+  load_col:
+    inter: [user_id, item_id, rating]
+  user_inter_num_interval: "[0,inf)"
+  item_inter_num_interval: "[0,inf)"
+  val_interval:
+    rating: "[0,inf)"
+  drop_filter_field: true

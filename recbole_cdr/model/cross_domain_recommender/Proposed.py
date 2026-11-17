@@ -124,7 +124,6 @@ class Proposed(CrossDomainRecommender):
         self.device = config['device']
         self.embedding_size = int(config['embedding_size'])
         self.n_layers = int(config['n_layers'])
-        self.reg_weight = float(config['reg_weight'])
         self.lambda_cl = float(_cfg(config, 'lambda_cl', 0.01))
         self.lambda_pop = float(_cfg(config, 'lambda_pop', 0.01))
         self.lambda_orth = float(_cfg(config, 'lambda_orth', 0.001))
@@ -274,10 +273,6 @@ class Proposed(CrossDomainRecommender):
         tgt_neg = (pu_t[tu] * pi_t[tn]).sum(-1)
         loss_src = self.rec_loss(src_pos, src_neg)
         loss_tgt = self.rec_loss(tgt_pos, tgt_neg)
-        loss_reg = self.reg_weight * (
-            self.reg_loss(self.pref_u_emb_src(su), self.pref_i_emb_src(si), self.pref_i_emb_src(sn))
-            + self.reg_loss(self.pref_u_emb_tgt(tu), self.pref_i_emb_tgt(ti), self.pref_i_emb_tgt(tn))
-        )
 
         # Item and user bias embeddings each receive an explicit popularity objective.
         zero = loss_src.new_zeros(())
@@ -335,7 +330,7 @@ class Proposed(CrossDomainRecommender):
                 loss_cl = (per_user_loss * weights).sum() / weights.sum().clamp_min(1e-8)
 
         # Constant-length tuple for RecBole-CDR trainer logging/summing.
-        return (loss_src, loss_tgt, loss_reg,
+        return (loss_src, loss_tgt,
                 self.lambda_pop * loss_pop,
                 self.lambda_orth * loss_orth,
                 self.lambda_multi * loss_multi,

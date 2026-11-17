@@ -80,6 +80,9 @@ class P2M2CDR(CrossDomainRecommender):
         self.full_sort_chunk_size = int(
             self._config_get(config, "full_sort_chunk_size", 256)
         )
+        self.full_sort_pair_chunk_size = int(
+            self._config_get(config, "full_sort_pair_chunk_size", 65536)
+        )
         self.strict_multimodal_loading = bool(
             self._config_get(config, "strict_multimodal_loading", True)
         )
@@ -191,6 +194,8 @@ class P2M2CDR(CrossDomainRecommender):
             raise ValueError("ssl_user_batch_size must be positive.")
         if self.full_sort_chunk_size <= 0:
             raise ValueError("full_sort_chunk_size must be positive.")
+        if self.full_sort_pair_chunk_size <= 0:
+            raise ValueError("full_sort_pair_chunk_size must be positive.")
         if self.disen_agg_way not in {"sum", "avg", "concat"}:
             raise ValueError(
                 "agg_way must be one of: sum, avg, concat."
@@ -930,28 +935,34 @@ class P2M2CDR(CrossDomainRecommender):
         self, user_embedding, item_embedding, domain
     ):
         score_chunks = []
+        item_step = min(
+            self.full_sort_chunk_size, self.full_sort_pair_chunk_size
+        )
         for start in range(
-            0, item_embedding.size(0), self.full_sort_chunk_size
+            0, item_embedding.size(0), item_step
         ):
-            item_chunk = item_embedding[
-                start : start + self.full_sort_chunk_size
-            ]
-            user_grid = user_embedding[:, None, :].expand(
-                -1, item_chunk.size(0), -1
+            item_chunk = item_embedding[start : start + item_step]
+            user_step = max(
+                1, self.full_sort_pair_chunk_size // item_chunk.size(0)
             )
-            item_grid = item_chunk[None, :, :].expand(
-                user_embedding.size(0), -1, -1
-            )
-            chunk_scores = self._score_pairs(
-                user_grid.reshape(-1, user_embedding.size(-1)),
-                item_grid.reshape(-1, item_embedding.size(-1)),
-                domain,
-            )
-            score_chunks.append(
-                chunk_scores.view(
-                    user_embedding.size(0), item_chunk.size(0)
+            user_scores = []
+            for user_start in range(0, user_embedding.size(0), user_step):
+                user_chunk = user_embedding[user_start : user_start + user_step]
+                user_grid = user_chunk[:, None, :].expand(
+                    -1, item_chunk.size(0), -1
                 )
-            )
+                item_grid = item_chunk[None, :, :].expand(
+                    user_chunk.size(0), -1, -1
+                )
+                chunk_scores = self._score_pairs(
+                    user_grid.reshape(-1, user_embedding.size(-1)),
+                    item_grid.reshape(-1, item_embedding.size(-1)),
+                    domain,
+                )
+                user_scores.append(
+                    chunk_scores.view(user_chunk.size(0), item_chunk.size(0))
+                )
+            score_chunks.append(torch.cat(user_scores, dim=0))
         return torch.cat(score_chunks, dim=1)
 
     def full_sort_predict(self, interaction):

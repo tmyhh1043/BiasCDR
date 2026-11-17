@@ -41,6 +41,8 @@ def _dataset_checkpoint_file(config):
         )
         if safe_stage:
             stage_suffix = f'-{safe_stage}'
+    if config['model'] in {'DGCDR', 'P2M2CDR', 'DCCDR', 'DTCDR', 'BiTGCF'}:
+        stage_suffix += f'-seed{int(config["seed"])}'
     return os.path.join(
         config["checkpoint_dir"], f"{safe_name}{stage_suffix}.pth"
     )
@@ -346,7 +348,8 @@ class PROPOSEDTrainer(CrossDomainTrainer):
             self.saved_model_file
         )
         self.saved_model_file = (
-            f'{checkpoint_root}-PROPOSED-ADDITIVE{checkpoint_extension}'
+            f'{checkpoint_root}-PROPOSED-ADDITIVE-seed{int(config["seed"])}'
+            f'{checkpoint_extension}'
         )
 
         self.logger.info('Proposed checkpoint: %s', self.saved_model_file)

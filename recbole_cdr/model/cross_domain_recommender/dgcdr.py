@@ -47,7 +47,6 @@ class DGCDR(CrossDomainRecommender):
         self.tem = config['temperature']  # (float) temperature of contrastive Loss
 
         self.drop_rate = config['drop_rate']  # (float) the dropout rate
-        self.full_sort_chunk_size = config['full_sort_chunk_size'] if 'full_sort_chunk_size' in config else 2048
         self.connect_way = config['connect_way']  # (str) the connecting way for all GCN layers
         self.preference_disentangle = config['preference_disentangle']  # (bool) whether to disentangle features after GNN
         self.fuse_mode = config['fuse_mode']  # (str) feature fusion of domain-common & -specific & -gnn
@@ -607,11 +606,8 @@ class DGCDR(CrossDomainRecommender):
         u_embeddings = restore_user_e[user]
         i_embeddings = restore_item_e[:self.target_num_items]
 
-        scores = []
-        for start in range(0, self.target_num_items, self.full_sort_chunk_size):
-            batch_item_e = i_embeddings[start:start + self.full_sort_chunk_size]
-            scores.append(torch.matmul(u_embeddings, batch_item_e.transpose(0, 1)))
-        return torch.cat(scores, dim=1).view(-1)
+        scores = torch.matmul(u_embeddings, i_embeddings.transpose(0, 1))
+        return scores.view(-1)
 
     def init_restore_e(self):
         # clear the storage variable when training

@@ -1,5 +1,0 @@
-# Minimal CSV settings shared by the conventional multiseed runner.
-metrics_csv_include_valid: false
-metrics_csv_include_params: true
-metrics_csv_param_keys:
-  - seed

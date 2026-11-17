@@ -1,8 +1,8 @@
-gpu_id: 0
+gpu_id: 1
 
 # P2M2-CDR reproduction defaults from the paper/released implementation.
-embedding_size: 128
-domain_disen_dim: 256
+embedding_size: 64
+domain_disen_dim: 128
 n_layers: 3
 drop_rate: 0.2
 
@@ -33,10 +33,10 @@ visual_embed_dim: 4096
 # Use the same training batch size as the other comparison methods.
 train_epochs: ["BOTH:200"]
 train_batch_size: 2048
-learning_rate: 0.001
+learning_rate: 0.0001
 eval_step: 1
 valid_start_epoch: 1
-stopping_step: 5
+stopping_step: 10
 
 # MLP scoring cannot be reduced to one matrix multiplication. Chunking bounds
 # its full-sort intermediate memory without changing scores.
@@ -48,4 +48,5 @@ eval_neg_sample_args:
   distribution: uniform
 eval_batch_size: 5000000
 full_sort_chunk_size: 8192
+full_sort_pair_chunk_size: 65536
 fast_full_sort_eval: true
