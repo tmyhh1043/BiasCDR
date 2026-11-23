@@ -23,7 +23,18 @@ def describe(values):
                     map(float, points))) | {"mean": float(values.mean()), "sd": float(values.std())}
 
 
-def inspect(path, device, users_output=None):
+def weight_summary(weights):
+    relative = weights / weights.mean()
+    return {
+        "raw_weight": describe(weights),
+        "relative_weight": describe(relative),
+        "weight_cv": float(weights.std() / weights.mean()),
+        "effective_sample_size_fraction": float(
+            weights.sum() ** 2 / (len(weights) * np.square(weights).sum())),
+    }
+
+
+def inspect(path, device, users_output=None, popularity_only_gamma=(1., 2.)):
     config, model, train, _valid, _test, source, _target = load_checkpoint(path, device)
     matrix = train.dataset.inter_matrix(form="csr", value_field=None, domain="source")
     counts = np.asarray(matrix.sum(axis=1)).ravel()
@@ -55,16 +66,29 @@ def inspect(path, device, users_output=None):
     weights = np.exp(-model.gamma * alpha)
     relative = weights / weights.mean()  # Same scale as a uniform-CL batch mean.
     ess_ratio = float(weights.sum() ** 2 / (len(weights) * np.square(weights).sum()))
+    popularity_only = {}
+    for gamma in popularity_only_gamma:
+        counterfactual = np.exp(-gamma * popularity)
+        popularity_only[f"gamma_{gamma:g}"] = {
+            "gamma": gamma,
+            **weight_summary(counterfactual),
+        }
     if users_output is not None:
         users_output.parent.mkdir(parents=True, exist_ok=True)
+        simulated_by_gamma = {
+            gamma: np.exp(-gamma * popularity) for gamma in popularity_only_gamma
+        }
         with users_output.open("w", newline="", encoding="utf-8") as stream:
             writer = csv.writer(stream)
             writer.writerow(("user_id", "source_train_count", "mm_valid", "popularity_risk",
-                             "semantic_risk", "combined_risk", "raw_weight", "relative_weight"))
-            for values in zip(users, counts[users], valid, popularity, semantic,
-                              alpha, weights, relative):
+                             "semantic_risk", "combined_risk", "raw_weight", "relative_weight",
+                             *(f"popularity_only_gamma_{gamma:g}" for gamma in popularity_only_gamma)))
+            for index, values in enumerate(zip(users, counts[users], valid, popularity, semantic,
+                                               alpha, weights, relative)):
                 writer.writerow((int(values[0]), int(values[1]), int(values[2]),
-                                 *(float(value) for value in values[3:])))
+                                 *(float(value) for value in values[3:]),
+                                 *(float(simulated_by_gamma[gamma][index])
+                                   for gamma in popularity_only_gamma)))
     result = {
         "checkpoint": str(path), "direction": config["source_domain"]["dataset"],
         "seed": int(config["seed"]), "gamma": float(model.gamma),
@@ -76,6 +100,7 @@ def inspect(path, device, users_output=None):
         "relative_weight": describe(relative),
         "weight_cv": float(weights.std() / weights.mean()),
         "effective_sample_size_fraction": ess_ratio,
+        "popularity_only_counterfactual": popularity_only,
         "relative_weight_bins": {
             f"[{lo:g},{hi:g})": int(((relative >= lo) & (relative < hi)).sum())
             for lo, hi in zip([0, .25, .5, .75, 1, 1.25, 1.5, 2, 3],
@@ -92,8 +117,13 @@ def main():
     parser.add_argument("--output", type=Path)
     parser.add_argument("--users-output", type=Path,
                         help="Write one row per active overlap user, with their CL weight")
+    parser.add_argument("--popularity-only-gamma", nargs="+", type=float, default=[1., 2.],
+                        help="Gamma values for popularity-only counterfactual weights")
     args = parser.parse_args()
-    result = inspect(args.checkpoint, args.device, args.users_output)
+    if any(value < 0 for value in args.popularity_only_gamma):
+        parser.error("--popularity-only-gamma values must be nonnegative")
+    result = inspect(args.checkpoint, args.device, args.users_output,
+                     args.popularity_only_gamma)
     report = json.dumps(result, indent=2, ensure_ascii=False)
     print(report)
     if args.output:

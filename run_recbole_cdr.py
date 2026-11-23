@@ -17,6 +17,9 @@ def main():
     parser.add_argument("--dataset", "--datasets", "-d", default="AmazonSport_AmazonPhone")
     parser.add_argument("--config_files", help="comma-separated YAML files")
     parser.add_argument("--gpu_id", type=int)
+    parser.add_argument("--popularity_only_cl", action="store_true",
+                        help="Train Proposed with popularity-only Selective-CL weights "
+                             "(beta=1, gamma=2 by default) in separate output paths")
     parser.add_argument("--config_overrides", action="append", default=[],
                         help="comma-separated KEY=VALUE settings")
     args, extra = parser.parse_known_args()
@@ -50,6 +53,22 @@ def main():
             key.strip() for key in overrides["metrics_csv_param_keys"].split(",")
             if key.strip()
         ]
+
+    if args.popularity_only_cl:
+        if args.model != "Proposed":
+            parser.error("--popularity_only_cl requires --model Proposed")
+        if "beta" in overrides and overrides["beta"] != 1:
+            parser.error("--popularity_only_cl requires beta=1")
+        if "lambda_cl" in overrides and (overrides["lambda_cl"] is None or
+                                          overrides["lambda_cl"] <= 0):
+            parser.error("--popularity_only_cl requires lambda_cl > 0")
+        overrides["beta"] = 1.0
+        overrides.setdefault("gamma", 2.0)
+        overrides.setdefault("experiment_tag", "popularity_only_cl")
+        overrides.setdefault("checkpoint_dir", "saved/proposed_popularity_only_cl")
+        overrides.setdefault("metrics_csv_path", "results/proposed_popularity_only_cl/test_metrics.csv")
+        overrides.setdefault("metrics_csv_include_params", True)
+        os.makedirs(overrides["checkpoint_dir"], exist_ok=True)
 
     if args.config_files:
         files = [path.strip() for path in args.config_files.split(",") if path.strip()]
